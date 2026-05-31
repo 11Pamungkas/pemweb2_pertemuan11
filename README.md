@@ -2,7 +2,7 @@
 ![](Screenshot/ss2.png)
 ![](Screenshot/ss3.png)
 
-![](Screenshot/pert10-1.png)
+<p>pertemuan 10</p>
 ![](Screenshot/pert10-2.png)
 ![](Screenshot/pert10-3.png)
 ![](Screenshot/pert10-4.png)
