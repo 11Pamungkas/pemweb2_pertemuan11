@@ -2,11 +2,33 @@
 ![](Screenshot/ss2.png)
 ![](Screenshot/ss3.png)
 
-<p>pertemuan 10</p>
-![](Screenshot/pert10-2.png)
-![](Screenshot/pert10-3.png)
-![](Screenshot/pert10-4.png)
-![](Screenshot/pert10-5.png)
+
+<P><h2>Pertemuan 10</h2></P>
+
+![Screenshot 1](./Screenshot/pert10-2.png)
+![Screenshot 2](./Screenshot/pert10-3.png)
+![Screenshot 3](./Screenshot/pert10-4.png)
+![Screenshot 4](./Screenshot/pert10-5.png)
+   
+
+<P><h2>Pertemuan 11</h2></P>
+app/
+ ├── Http/Controllers/
+ │     ├── DashboardController.php
+ │     └── BukuController.php
+ │
+ ├── View/Components/
+ │     └── BukuCard.php
+ │
+resources/views/
+ ├── components/
+ │     └── buku-card.blade.php
+ │
+ ├── buku/
+ │     └── index.blade.php
+ │
+ └── dashboard.blade.php
+
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
