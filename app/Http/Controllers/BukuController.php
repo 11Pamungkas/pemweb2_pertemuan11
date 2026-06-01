@@ -12,20 +12,31 @@ class BukuController extends Controller
      */
     public function index()
     {
-        // Ambil semua data buku dari database
+        // Ambil semua data buku
         $bukus = Buku::latest()->get();
         
-        // Statistik untuk card
+        // Statistik buku
         $totalBuku = Buku::count();
         $bukuTersedia = Buku::where('stok', '>', 0)->count();
-        $bukuHabis = Buku::where('stok', 0)->count();
+        $bukuHabis = Buku::where('stok', '<=', 0)->count();
         
-        // Return view dengan data
+        // Data kategori & tahun untuk filter
+        $kategoris = Buku::select('kategori')
+                        ->distinct()
+                        ->pluck('kategori');
+ 
+        $tahuns = Buku::select('tahun_terbit')
+                    ->distinct()
+                    ->orderBy('tahun_terbit', 'desc')
+                    ->pluck('tahun_terbit');
+        
         return view('buku.index', compact(
             'bukus',
             'totalBuku',
             'bukuTersedia',
-            'bukuHabis'
+            'bukuHabis',
+            'kategoris',
+            'tahuns'
         ));
     }
  
@@ -34,7 +45,6 @@ class BukuController extends Controller
      */
     public function create()
     {
-        // Akan diimplementasi di pertemuan 12
         return view('buku.create');
     }
  
@@ -43,7 +53,7 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        // Akan diimplementasi di pertemuan 12
+        //
     }
  
     /**
@@ -51,10 +61,8 @@ class BukuController extends Controller
      */
     public function show(string $id)
     {
-        // Find buku by ID, throw 404 if not found
         $buku = Buku::findOrFail($id);
         
-        // Return view detail buku
         return view('buku.show', compact('buku'));
     }
  
@@ -63,8 +71,8 @@ class BukuController extends Controller
      */
     public function edit(string $id)
     {
-        // Akan diimplementasi di pertemuan 12
         $buku = Buku::findOrFail($id);
+ 
         return view('buku.edit', compact('buku'));
     }
  
@@ -73,7 +81,7 @@ class BukuController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Akan diimplementasi di pertemuan 12
+        //
     }
  
     /**
@@ -81,7 +89,7 @@ class BukuController extends Controller
      */
     public function destroy(string $id)
     {
-        // Akan diimplementasi di pertemuan 12
+        //
     }
     
     /**
@@ -89,18 +97,96 @@ class BukuController extends Controller
      */
     public function filterKategori($kategori)
     {
-        $bukus = Buku::where('kategori', $kategori)->latest()->get();
+        $bukus = Buku::where('kategori', $kategori)
+                    ->latest()
+                    ->get();
         
         $totalBuku = $bukus->count();
         $bukuTersedia = $bukus->where('stok', '>', 0)->count();
-        $bukuHabis = $bukus->where('stok', 0)->count();
+        $bukuHabis = $bukus->where('stok', '<=', 0)->count();
+ 
+        $kategoris = Buku::select('kategori')
+                        ->distinct()
+                        ->pluck('kategori');
+ 
+        $tahuns = Buku::select('tahun_terbit')
+                    ->distinct()
+                    ->orderBy('tahun_terbit', 'desc')
+                    ->pluck('tahun_terbit');
         
         return view('buku.index', compact(
             'bukus',
             'totalBuku',
             'bukuTersedia',
             'bukuHabis',
-            'kategori'
+            'kategori',
+            'kategoris',
+            'tahuns'
+        ));
+    }
+ 
+    /**
+     * Search & Filter Buku Advanced
+     */
+    public function search(Request $request)
+    {
+        $query = Buku::query();
+ 
+        // Search keyword
+        if ($request->keyword) {
+ 
+            $query->where(function ($q) use ($request) {
+ 
+                $q->where('judul', 'like', '%' . $request->keyword . '%')
+                  ->orWhere('pengarang', 'like', '%' . $request->keyword . '%')
+                  ->orWhere('penerbit', 'like', '%' . $request->keyword . '%');
+            });
+        }
+ 
+        // Filter kategori
+        if ($request->kategori) {
+            $query->where('kategori', $request->kategori);
+        }
+ 
+        // Filter tahun
+        if ($request->tahun) {
+            $query->where('tahun_terbit', $request->tahun);
+        }
+ 
+        // Filter ketersediaan
+        if ($request->ketersediaan == 'tersedia') {
+            $query->where('stok', '>', 0);
+        }
+ 
+        if ($request->ketersediaan == 'habis') {
+            $query->where('stok', '<=', 0);
+        }
+ 
+        // Ambil hasil
+        $bukus = $query->latest()->get();
+ 
+        // Statistik berdasarkan hasil filter
+        $totalBuku = $bukus->count();
+        $bukuTersedia = $bukus->where('stok', '>', 0)->count();
+        $bukuHabis = $bukus->where('stok', '<=', 0)->count();
+ 
+        // Data dropdown
+        $kategoris = Buku::select('kategori')
+                        ->distinct()
+                        ->pluck('kategori');
+ 
+        $tahuns = Buku::select('tahun_terbit')
+                    ->distinct()
+                    ->orderBy('tahun_terbit', 'desc')
+                    ->pluck('tahun_terbit');
+ 
+        return view('buku.index', compact(
+            'bukus',
+            'totalBuku',
+            'bukuTersedia',
+            'bukuHabis',
+            'kategoris',
+            'tahuns'
         ));
     }
 }

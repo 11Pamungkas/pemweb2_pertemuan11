@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\DashboardController;
  
 Route::get('/', function () {
     return view('home');
@@ -17,3 +18,9 @@ Route::get('/buku/kategori/{kategori}', [BukuController::class, 'filterKategori'
  
 // Resource route untuk Anggota (akan dibuat nanti)
 Route::resource('anggota', AnggotaController::class);
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+
+Route::get('/buku/search', [BukuController::class, 'search'])
+    ->name('buku.search');
